@@ -18,16 +18,19 @@ export const SearchHeader = styled.header`
   background-color: #3d4c4c;
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
     0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 `;
 
 export const SearchForm = styled(Form)`
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 600px;
+  max-width: 480px;
   background-color: #e2d8d8;
-  border-radius: 3px;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 `;
 
 export const SearchBtn = styled.button`
@@ -45,6 +48,8 @@ export const SearchBtn = styled.button`
   cursor: pointer;
   outline: none;
 
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
   :hover {
     opacity: 1;
   }
@@ -57,10 +62,12 @@ export const Input = styled(Field)`
   font-size: 20px;
   border: none;
   outline: none;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 14px;
+  padding-right: 8px;
   background: #e2d8d8;
   color: #0a0a0a;
+
+  
 
   ::placeholder {
     font: inherit;
