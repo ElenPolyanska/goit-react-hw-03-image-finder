@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
+
 import { Dna } from 'react-loader-spinner';
 import { Background } from './Loader.styled';
 
-export const Loader = ({ visible }) => {
+export const Loader = () => {
   return (
     <Background>
       <Dna
@@ -22,6 +22,4 @@ export const Loader = ({ visible }) => {
   );
 };
 
-Loader.propTypes = {
-  visible: PropTypes.bool.isRequired,
-};
+

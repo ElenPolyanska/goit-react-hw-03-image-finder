@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Form, Field } from 'formik';
 
-export const SearchHeader = styled.header`
+
+export const Header = styled.header`
   top: 0;
   left: 0;
   position: sticky;
@@ -22,7 +22,7 @@ export const SearchHeader = styled.header`
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 `;
 
-export const SearchForm = styled(Form)`
+export const Form = styled.form`
   display: flex;
   align-items: center;
   width: 100%;
@@ -55,7 +55,7 @@ export const SearchBtn = styled.button`
   }
 `;
 
-export const Input = styled(Field)`
+export const Input = styled.input`
   display: inline-block;
   width: 100%;
   font: inherit;

@@ -1,124 +1,138 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { Component } from 'react';
+// import PropTypes from 'prop-types';
 
-import { fetchImages } from '../../services/fetch';
+
+
 import { Gallery } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
-import { Button } from '../Button/Button';
-import { Loader } from '../Loader/Loader';
+// import { Button } from '../Button/Button';
 
-const Status = {
-  IDLE: 'idle',
-  SUCCESS: 'success',
+
+export const ImageGallery = ({ images }) => {
+  return (
+    <Gallery>
+      {images.map(({ id, webformatURL, tags, largeImageURL }) => (
+        <ImageGalleryItem
+          key={id}
+          webformatURL={webformatURL}
+          tags={tags}
+          largeImageURL={largeImageURL}
+        />
+      ))}
+    </Gallery>
+  );
 };
 
-export class ImageGallery extends Component {
-  state = {
-    status: Status.IDLE,
-    images: [],
-    isLoading: false,
-    isMore: false,
-  };
+// const Status = {
+//   IDLE: 'idle',
+//   SUCCESS: 'success',
+// };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { query, page } = this.props;
+// export class ImageGallery extends Component {
+//   state = {
+//     status: Status.IDLE,
+//     images: [],
+//     isLoading: false,
+//     // isMore: false,
+//   };
 
-    if (prevProps.query !== query || prevProps.page !== page) {
-      this.setState({
-        isLoading: true,
-      });
+//   async componentDidUpdate(prevProps, prevState) {
+//     const { query, page } = this.props;
 
-      try {
-        const data = await fetchImages(query, page);
+//     if (prevProps.query !== query || prevProps.page !== page) {
+//       this.setState({
+//         isLoading: true,
+//       });
 
-        // Пусте поле інпуту
-        if (!query) {
-          toast.info(`The field is empty. Please enter the word.`);
-          return;
-        }
+//       try {
+//         const data = await fetchImages(query, page);
 
-        // Повернення пустого масиву з бекенду
-        if (data.hits.length === 0) {
-          this.setState({
-            status: Status.IDLE,
-            isMore: false,
-          });
-          toast.error('No results were found for your request');
-          return;
-        }
+//         // Пусте поле інпуту
+//         // if (!query) {
+//         //   toast.info(`The field is empty. Please enter the word.`);
+//         //   return;
+//         // }
 
-        this.setState({
-          isMore: data.hits.length === 12,
-        });
+//         // // Повернення пустого масиву з бекенду
+//         // if (data.hits.length === 0) {
+//         //   this.setState({
+//         //     status: Status.IDLE,
+//         //     isMore: false,
+//         //   });
+//         //   toast.error('No results were found for your request');
+//         //   return;
+//         // }
 
-        const images = data.hits.map(
-          ({ id, webformatURL, largeImageURL, tags }) => ({
-            id,
-            webformatURL,
-            largeImageURL,
-            tags,
-          })
-        );
+//         this.setState({
+//           isMore: data.hits.length === 12,
+//         });
 
-        // Перевірка на новий запит
-        if (prevProps.query !== query) {
-          toast.success(`We found ${data.totalHits} images`);
-          this.setState({
-            status: Status.SUCCESS,
-            images: [...images],
-          });
-        } else {
-          this.setState({
-            images: [...prevState.images, ...images],
-          });
-        }
+//         const images = data.hits.map(
+//           ({ id, webformatURL, largeImageURL, tags }) => ({
+//             id,
+//             webformatURL,
+//             largeImageURL,
+//             tags,
+//           })
+//         );
 
-        //Остання сторінка запитів
-        const totalPages = Math.ceil(data.totalHits / 12);
-        if (page === totalPages && page > 1) {
-          toast.info(`You reached end of results`);
-        }
-      } catch (error) {
-        toast.error('Sorry, something went wrong. Please, try again');
-        this.setState({
-          status: Status.IDLE,
-        });
-      } finally {
-        this.setState({
-          isLoading: false,
-        });
-      }
-    }
-  }
+//         // Перевірка на новий запит
+//         if (prevProps.query !== query) {
+//           toast.success(`We found ${data.totalHits} images`);
+//           this.setState({
+//             status: 'resolved',
+//             images: [...images],
+//           });
+//         } else {
+//           this.setState({
+//             images: [...prevState.images, ...images],
+//           });
+//         }
 
-  render() {
-    const { status, images, isLoading, isMore } = this.state;
-    const { handleCilck } = this.props;
+//         //Остання сторінка запитів
+//         const totalPages = Math.ceil(data.totalHits / 12);
+//         if (page === totalPages && page > 1) {
+//           toast.info(`You reached end of results`);
+//         }
+//       } catch (error) {
+//         toast.error('Sorry, something went wrong. Please, try again');
+//         this.setState({
+//           status: Status.IDLE,
+//         });
+//       } finally {
+//         this.setState({
+//           isLoading: false,
+//         });
+//       }
+//     }
+//   }
 
-    return (
-      <>
-        {isLoading && <Loader visible={isLoading} />}
+//   render() {
+//     const { status, images, isLoading } = this.state;
+//     const { handleCilck } = this.props;
 
-        {status === 'success' && (
-          <Gallery>
-            {images.map(image => {
-              return <ImageGalleryItem key={image.id} image={image} />;
-            })}
-          </Gallery>
-        )}
+//     return (
+//       <>
+//         {isLoading && <Loader visible={isLoading} />}
 
-        {isMore && <Button onClick={handleCilck} />}
+//         {status=== 'resolved' && (
+//           <Gallery>
+//             {images.map(image => {
+//               return <ImageGalleryItem key={image.id} image={image} />;
+//             })}
+//           </Gallery>
+//         )}
 
-        <ToastContainer autoClose={2000} theme={ 'dark'} />
-      </>
-    );
-  }
-}
+//         {/* {isMore && <Button onClick={handleCilck} />} */}
 
-ImageGallery.propTypes = {
-  query: PropTypes.string.isRequired,
-  page: PropTypes.number.isRequired,
-  handleCilck: PropTypes.func.isRequired,
-};
+//         <ToastContainer autoClose={2000} theme={ 'dark'} />
+//       </>
+//     );
+//   }
+// }
+
+// ImageGallery.propTypes = {
+//   query: PropTypes.string.isRequired,
+//   page: PropTypes.number.isRequired,
+//   handleCilck: PropTypes.func.isRequired,
+// };
