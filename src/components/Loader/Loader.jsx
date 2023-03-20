@@ -1,4 +1,3 @@
-
 import { Dna } from 'react-loader-spinner';
 import { Background } from './Loader.styled';
 

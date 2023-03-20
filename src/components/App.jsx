@@ -15,7 +15,6 @@ export class App extends Component {
     page: 1,
     images: [],
     isMore: false,
-    isLoading: false,
     status: 'idle',
   };
 
@@ -26,32 +25,38 @@ export class App extends Component {
     ) {
       this.setState({ status: 'pending' });
       try {
-        const response = await fetchImages(this.state.value, this.state.page);
-        if (response.length === 0) {
+        const res = await fetchImages(this.state.value, this.state.page);
+        console.log(res);
+        if (res.hits.length === 0) {
           this.setState({ status: 'rejected' });
           toast.info(
             `Вибачте, але за запитом ${this.state.value} нічого не знайдено`
           );
         }
         // //Остання сторінка запитів
-        // const totalPages = Math.ceil(response.totalHits / 12);
-        // if (this.state.page === totalPages && this.state.page > 1) {
+        // const totalPages = Math.ceil(res.totalHits / 12);
+        // if (this.state.page === totalPages ) {
         //   toast.info(`You reached end of results`);
+        //   this.setState({ isMore: false });
         // }
 
-        if (response.length > 0) {
+        if (res.hits.length > 0) {
           this.setState(({ images }) => {
             return {
-              images: [...images, ...response],
+              images: [...images, ...res.hits],
               status: 'resolved',
             };
           });
-          toast.success(`Знайдено ${response.totalHits} зображень`);
+          toast.success(`Знайдено ${res.totalHits} зображень`);
         }
-        if (response.length > 12) {
+        if (this.state.value !== prevState.value) {
+          this.setState({ images: res.hits });
+        }
+        if (res.totalHits > 12 || res.hits === 12) {
           this.setState({ isMore: true });
         }
       } catch (error) {
+        toast.info('Шкода, щось пішло не так. Спробуйте ще раз');
         this.setState({
           status: 'idle',
         });
@@ -70,21 +75,15 @@ export class App extends Component {
   };
 
   render() {
-    const { images, isMore, status, isLoading } = this.state;
+    const { images, isMore, status } = this.state;
     if (status === 'pending') {
       return <Loader />;
-    }
-    if (status === 'rejected') {
-      return toast.error('Шкода, щось пішло не так. Спробуйте ще раз');
-    }
-    if (status === 'resolved') {
-      this.setState({ isLoading: true });
     }
     return (
       <Box>
         <Searchbar handleSubmit={this.handleSubmit} />
 
-        {isLoading && <ImageGallery images={images} />}
+        <ImageGallery images={images} />
         {isMore && <Button onClick={this.loadMore} />}
         <ToastContainer autoClose={2000} theme={'dark'} />
         <GlobalStyles />
