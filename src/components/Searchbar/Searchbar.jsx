@@ -17,7 +17,7 @@ export class Searchbar extends Component {
   handleSearch = e => {
     e.preventDefault();
     if (this.state.inputValue.trim() === '') {
-      toast.info('Необхідно ввести слово для пошуку');
+      return toast.info('Необхідно ввести слово для пошуку');
     }
     this.props.handleSubmit(this.state.inputValue);
     this.setState({ inputValue: '' });

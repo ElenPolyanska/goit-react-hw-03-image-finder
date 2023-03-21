@@ -23,37 +23,33 @@ export class App extends Component {
       prevState.value !== this.state.value ||
       prevState.page !== this.state.page
     ) {
-      this.setState({ status: 'pending' });
       try {
         const res = await fetchImages(this.state.value, this.state.page);
-        console.log(res);
+        this.setState({ status: 'pending' });
+
         if (res.hits.length === 0) {
-          this.setState({ status: 'rejected' });
+          this.setState({ status: 'idle' });
           toast.info(
             `Вибачте, але за запитом ${this.state.value} нічого не знайдено`
           );
         }
-        // //Остання сторінка запитів
-        // const totalPages = Math.ceil(res.totalHits / 12);
-        // if (this.state.page === totalPages ) {
-        //   toast.info(`You reached end of results`);
-        //   this.setState({ isMore: false });
-        // }
 
-        if (res.hits.length > 0) {
-          this.setState(({ images }) => {
+        if (this.state.page === 1 && res.hits.length !== 0) {
+          toast.success(`Знайдено ${res.totalHits} зображень`);
+          this.setState({ images: res.hits, status: 'resolved' });
+        } else {
+          this.setState(prevState => {
             return {
-              images: [...images, ...res.hits],
+              images: [...prevState.images, ...res.hits],
               status: 'resolved',
             };
           });
-          toast.success(`Знайдено ${res.totalHits} зображень`);
         }
-        if (this.state.value !== prevState.value) {
-          this.setState({ images: res.hits });
-        }
-        if (res.totalHits > 12 || res.hits === 12) {
+     
+        if (res.hits.length === 12 && res.totalHits > 12 ) {
           this.setState({ isMore: true });
+        } else {
+          this.setState({ isMore: false });
         }
       } catch (error) {
         toast.info('Шкода, щось пішло не так. Спробуйте ще раз');
@@ -69,6 +65,7 @@ export class App extends Component {
   };
 
   loadMore = () => {
+    this.setState({ status: 'resolved' });
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
@@ -82,7 +79,6 @@ export class App extends Component {
     return (
       <Box>
         <Searchbar handleSubmit={this.handleSubmit} />
-
         <ImageGallery images={images} />
         {isMore && <Button onClick={this.loadMore} />}
         <ToastContainer autoClose={2000} theme={'dark'} />
